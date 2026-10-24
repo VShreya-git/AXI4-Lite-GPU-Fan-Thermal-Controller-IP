@@ -1,6 +1,4 @@
-# AXI4-Lite GPU Fan & Thermal Controller IP (pure Verilog-2001)
-
-Two asynchronous clock domains, no vendor primitives, no SystemVerilog.
+# AXI4-Lite GPU Fan & Thermal Controller IP 
 
 ```
  AXI4-Lite master ──► axi4l_slave_if ──► fan_regs ──(cfg bundle, CDC handshake)──► fan_core ─► PWM_OUT[3:0]
