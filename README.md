@@ -38,16 +38,16 @@ Duty everywhere is a 16-bit fraction: `0xFFFF` = exactly 100 %, `0x0000` = exact
 | 08 | STATUS (RO) | [0] SAFE [1] LOCKED [2] IRQ |
 | 0C / 10 | IRQ_EN / IRQ_STATUS (W1C) | [0] fault [1] tach window [2] PWM frame |
 | 14 | LOCK | write 0xA5 lock, 0x5A unlock (other → SLVERR) |
-| 18 1C 20 24 28 | PRESCALE, PERIOD, DEAD_TIME, POLARITY, FAULT_LEVEL | 🔒 lockable |
+| 18 1C 20 24 28 | PRESCALE, PERIOD, DEAD_TIME, POLARITY, FAULT_LEVEL | lockable |
 | 2C | GAMMA_EN | per channel, x² curve |
 | 30..4C | DUTY[0..7] | 16-bit fraction |
 | 50..6C | PHASE[0..7] | edge-aligned phase offset (counts) |
 | 70 | CURVE_T | {t3,t2,t1,t0} °C |
 | 74..80 | CURVE_L0..L3 | 16-bit levels |
-| 84 88 8C 90 94 | HYST, T_CRIT 🔒, FAN_MIN, TEMP_SW, TEMP_NOW (RO) | |
+| 84 88 8C 90 94 | HYST, T_CRIT, FAN_MIN, TEMP_SW, TEMP_NOW (RO) | |
 | 98 9C A0 | KP, KI (Q8.8), RPM_MAX | |
 | A4 A8 AC | TACH_GATE (cycles), TACH_MULT, STALL_CFG | [7:0] duty thr (top byte) [11:8] windows |
-| B0 B4 B8 BC C0 | FAULT_EN 🔒, STALE_TO 🔒, WDOG_TO 🔒, WDOG_CTRL 🔒, WDOG_KICK (WO) | |
+| B0 B4 B8 BC C0 | FAULT_EN, STALE_TO, WDOG_TO, WDOG_CTRL, WDOG_KICK (WO) | |
 | C4 C8 CC | FAULT_STATUS (RO), FAULT_CLR, TELE_CLR | faults: [0] pin [1] stall [2] stale [3] wdog [4] over-temp |
 | D0..E0 | RPM, DUTY_NOW, DUTY_MIN, DUTY_MAX, FAULT_COUNT (RO) | |
 
@@ -66,8 +66,4 @@ Needs: iverilog, verilator, yosys, python3 (all free).
 * `tb_system`: AXI BFM (AW/W orderings, delays, pipelined writes, WSTRB, SLVERR, lock), protocol monitor, fan-plant model (closed loop, saturation/windup recovery), faults, IRQ, reset mid-transaction.
 * `scripts/mutate.py`: injects one RTL bug at a time; every mutant must make a testbench fail.
 
-## Known limits (be upfront about these)
-* Zero-delay RTL simulation cannot show metastability/skew: run a CDC tool / STA before silicon or FPGA sign-off.
-* One reset source assumed for both domains (req/ack toggles start equal).
-* PWM dithering and APB/Wishbone wrappers are not implemented.
-* `FAULT_IN` takes 5 PCLK cycles to reach the pin (2-FF sync + latch + safe + output flop); internal faults / `safe` take 1 flop to the pin.
+
